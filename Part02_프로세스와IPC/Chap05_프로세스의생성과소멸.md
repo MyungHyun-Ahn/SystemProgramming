@@ -121,3 +121,10 @@ BOOL CreateProcess (\
 7. lpEnvironment : 환경블록
 8. lpCurrentDirectory : 생성하는 프로세스의 현재 경로
 9. lpProcessInformation : 생성한 프로세스 정보를 얻기 위해 사용
+
+## 이것만은 알고 갑시다.
+1. 프로세스에 대한 이해
+
+2. 프로세스의 상태
+3. 컨텍스트 스위칭 (Context Switching)
+4. 프로세스를 생성하는 방법

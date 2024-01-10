@@ -2,6 +2,7 @@
 	CommandPrmpt_One.cpp
 	프로그램 설명 : 명령 프롬프트의 골격
 */
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,8 +17,9 @@ TCHAR ERROR_CMD[] = _T("'%s'은(는) 실행할 수 있는 프로그램이 아닙니다. \n");
 
 int CmdProcessing(void);
 TCHAR *StrLower(TCHAR *);
+BOOL CmdCreateProcess(TCHAR*);
 
-int tmain(int agrc, TCHAR *argv[])
+int _tmain(int agrc, TCHAR *argv[])
 {
 	// 한글 입력을 가능케 하기 위해
 	_tsetlocale(LC_ALL, _T("Korean"));
@@ -66,21 +68,53 @@ int CmdProcessing(void)
 	{
 		return TRUE;
 	}
-	else if (!_tcscmp(cmdTokenList[0], _T("추가 명령어 1")))
+	else if (!_tcscmp(cmdTokenList[0], _T("")))
 	{
-
 	}
-	else if (!_tcscmp(cmdTokenList[0], _T("추가 명령어 2")))
+	else if (!_tcscmp(cmdTokenList[0], _T("")))
 	{
 
 	}
 	else
 	{
-		_tprintf(ERROR_CMD, cmdTokenList[0]);
+		BOOL isSuccess = CmdCreateProcess(cmdTokenList[0]);
+
+		if (isSuccess == FALSE)
+			_tprintf(ERROR_CMD, cmdTokenList[0]);
 	}
 
 	return 0;
 }
+
+/***************************************************************************************
+	함수 : BOOL CmdCreateProcess(TCHAR *pStr)
+	기능 : 프로세스 이름을 입력받아 실행한다.
+			성공 여부를 반환한다.
+***************************************************************************************/
+BOOL CmdCreateProcess(TCHAR command[])
+{
+	STARTUPINFO si = { 0, };
+	PROCESS_INFORMATION pi;
+	si.cb = sizeof(si);
+	si.dwFlags = STARTF_USEPOSITION | STARTF_USESIZE;
+	si.dwX = 100;
+	si.dwY = 200;
+	si.dwXSize = 300;
+	si.dwYSize = 200;
+
+	SetCurrentDirectory(_T("C:\\Procademy\\SystemProgramming\\Code\\Part02\\x64\\Debug")); // 현재 디렉터리 설정
+
+	BOOL ret = CreateProcess(
+		NULL,
+		command,
+		NULL, NULL, TRUE,
+		CREATE_NEW_CONSOLE, 
+		NULL, NULL, &si, &pi
+	);
+
+	return ret;
+}
+
 
 /***************************************************************************************
 	함수 : TCHAR *StrLower(TCHAR *pStr)
