@@ -16,13 +16,28 @@
 TCHAR ERROR_CMD[] = _T("'%s'은(는) 실행할 수 있는 프로그램이 아닙니다. \n");
 
 int CmdProcessing(void);
+int CmdProcessing(int);
 TCHAR *StrLower(TCHAR *);
 BOOL CmdCreateProcess(TCHAR*);
+BOOL CmdEcho(TCHAR[]);
+BOOL CmdStart(TCHAR *);
 
-int _tmain(int agrc, TCHAR *argv[])
+TCHAR cmdString[STR_LEN];
+TCHAR cmdTokenList[CMD_TOKEN_NUM][STR_LEN];
+TCHAR seps[] = _T(" ,\t\n");
+
+int _tmain(int argc, TCHAR *argv[])
 {
 	// 한글 입력을 가능케 하기 위해
 	_tsetlocale(LC_ALL, _T("Korean"));
+
+	if (argc > 1)
+	{
+		for (int i = 1; i < argc; i++)
+			_tcscpy(cmdTokenList[i - 1], argv[i]);
+
+		CmdProcessing(argc - 1);
+	}
 
 	DWORD isExit;
 
@@ -39,13 +54,8 @@ int _tmain(int agrc, TCHAR *argv[])
 	return 0;
 }
 
-
-TCHAR cmdString[STR_LEN];
-TCHAR cmdTokenList[CMD_TOKEN_NUM][STR_LEN];
-TCHAR seps[] = _T(" ,\t\n");
-
 /***************************************************************************************
-	함수 : TCHAR int CmdProcessing(void)
+	함수 : TCHAR int CmdProcessing(int)
 	기능 : 명령어를 입력 받아서 해당 명령어에 지정되어 있는 기능을 수행한다.
 			exit가 입력되면 TRUE를 반환하고 이는 프로그램의 종료로 이어진다.
 ***************************************************************************************/
@@ -68,8 +78,33 @@ int CmdProcessing(void)
 	{
 		return TRUE;
 	}
-	else if (!_tcscmp(cmdTokenList[0], _T("")))
+	else if (!_tcscmp(cmdTokenList[0], _T("echo")))
 	{
+		CmdEcho(cmdTokenList[1]);
+	}
+	else if (!_tcscmp(cmdTokenList[0], _T("start")))
+	{
+		TCHAR optString[STR_LEN] = { 0, };
+		TCHAR cmdStringWithOpt[STR_LEN] = { 0, };
+
+		if (tokenNum > 1)
+		{
+			for (int i = 1; i < tokenNum; i++)
+			{
+				_stprintf(optString, _T("%s %s"), optString, cmdTokenList[i]);
+			}
+
+
+			_stprintf(cmdStringWithOpt, _T("%s %s"), _T("SPProject.exe"), optString);
+		}
+		else
+		{
+			_stprintf(cmdStringWithOpt, _T("%s"), _T("SPProject.exe"));
+		}
+
+		BOOL isSuccess = CmdStart(cmdStringWithOpt);
+		if (isSuccess == FALSE)
+			_tprintf(_T("Start 실패 \n"));
 	}
 	else if (!_tcscmp(cmdTokenList[0], _T("")))
 	{
@@ -86,8 +121,57 @@ int CmdProcessing(void)
 	return 0;
 }
 
+int CmdProcessing(int tokenNum)
+{
+	if (!_tcscmp(cmdTokenList[0], _T("exit")))
+	{
+		return TRUE;
+	}
+	else if (!_tcscmp(cmdTokenList[0], _T("echo")))
+	{
+		CmdEcho(cmdTokenList[1]);
+	}
+	else if (!_tcscmp(cmdTokenList[0], _T("start")))
+	{
+		TCHAR optString[STR_LEN] = { 0, };
+		TCHAR cmdStringWithOpt[STR_LEN] = { 0, };
+
+		if (tokenNum > 1)
+		{
+			for (int i = 1; i < tokenNum; i++)
+			{
+				_stprintf(optString, _T("%s %s"), optString, cmdTokenList[i]);
+			}
+
+
+			_stprintf(cmdStringWithOpt, _T("%s %s"), _T("SPProject.exe"), optString);
+		}
+		else
+		{
+			_stprintf(cmdStringWithOpt, _T("%s"), _T("SPProject.exe"));
+		}
+
+		BOOL isSuccess = CmdStart(cmdStringWithOpt);
+		if (isSuccess == FALSE)
+			_tprintf(_T("Start 실패 \n"));
+	}
+	else if (!_tcscmp(cmdTokenList[0], _T("aaaaa")))
+	{
+
+	}
+	else
+	{
+		BOOL isSuccess = CmdCreateProcess(cmdTokenList[0]);
+
+		if (isSuccess == FALSE)
+			_tprintf(ERROR_CMD, cmdTokenList[0]);
+	}
+
+	return 0;
+}
+
 /***************************************************************************************
-	함수 : BOOL CmdCreateProcess(TCHAR *pStr)
+	함수 : BOOL CmdCreateProcess(TCHAR[])
 	기능 : 프로세스 이름을 입력받아 실행한다.
 			성공 여부를 반환한다.
 ***************************************************************************************/
@@ -112,7 +196,56 @@ BOOL CmdCreateProcess(TCHAR command[])
 		NULL, NULL, &si, &pi
 	);
 
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+
 	return ret;
+}
+
+/***************************************************************************************
+	함수 : BOOL CmdStart(TCHAR[])
+	기능 : 새 cmd 창를 띄운다.
+			추가로 명령어를 입력가능하다.
+***************************************************************************************/
+
+BOOL CmdStart(TCHAR command[])
+{
+	STARTUPINFO si = { 0, };
+	PROCESS_INFORMATION pi;
+	si.cb = sizeof(si);
+	si.dwFlags = STARTF_USEPOSITION | STARTF_USESIZE;
+	si.dwX = 100;
+	si.dwY = 200;
+	si.dwXSize = 300;
+	si.dwYSize = 200;
+
+	SetCurrentDirectory(_T("C:\\Procademy\\SystemProgramming\\Code\\Part02\\x64\\Debug")); // 현재 디렉터리 설정
+
+	BOOL ret = CreateProcess(
+		NULL,
+		command,
+		NULL, NULL, TRUE,
+		CREATE_NEW_CONSOLE,
+		NULL, NULL, &si, &pi
+	);
+
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+
+	return ret;
+}
+
+
+/***************************************************************************************
+	함수 : BOOL CmdEcho(TCHAR[])
+	기능 : 입력한 문자를 그대로 출력한다.
+***************************************************************************************/
+
+BOOL CmdEcho(TCHAR command[])
+{
+	_tprintf(command);
+	_fputts(_T("\n"), stdout);
+	return TRUE;
 }
 
 
