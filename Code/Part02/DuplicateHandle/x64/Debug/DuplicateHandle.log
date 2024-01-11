@@ -1,0 +1,4 @@
+﻿  DuplicateHandle.cpp
+C:\Procademy\SystemProgramming\Code\Part02\DuplicateHandle\DuplicateHandle.cpp(21,75): warning C4311: '형식 캐스트': 'HANDLE'에서 'unsigned int'(으)로 포인터가 잘립니다.
+C:\Procademy\SystemProgramming\Code\Part02\DuplicateHandle\DuplicateHandle.cpp(21,75): warning C4302: '형식 캐스트': 'HANDLE'에서 'unsigned int'(으)로 잘립니다.
+  DuplicateHandle.vcxproj -> C:\Procademy\SystemProgramming\Code\Part02\x64\Debug\DuplicateHandle.exe

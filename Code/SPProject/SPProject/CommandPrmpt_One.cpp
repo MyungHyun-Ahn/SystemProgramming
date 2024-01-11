@@ -9,18 +9,22 @@
 #include <tchar.h>
 #include <locale.h>
 #include <windows.h>
+#include <TlHelp32.h>
+#include <vector>
 
 #define STR_LEN 256
 #define CMD_TOKEN_NUM 10
 
 TCHAR ERROR_CMD[] = _T("'%s'은(는) 실행할 수 있는 프로그램이 아닙니다. \n");
 
-int CmdProcessing(void);
 int CmdProcessing(int);
 TCHAR *StrLower(TCHAR *);
 BOOL CmdCreateProcess(TCHAR*);
 BOOL CmdEcho(TCHAR[]);
 BOOL CmdStart(TCHAR *);
+BOOL CmdListProcess();
+BOOL CmdKillProcess(TCHAR*);
+std::vector<DWORD> GetProcessPIDs(TCHAR*);
 
 TCHAR cmdString[STR_LEN];
 TCHAR cmdTokenList[CMD_TOKEN_NUM][STR_LEN];
@@ -43,7 +47,7 @@ int _tmain(int argc, TCHAR *argv[])
 
 	while (true)
 	{
-		isExit = CmdProcessing();
+		isExit = CmdProcessing(0);
 		if (isExit == TRUE)
 		{
 			_fputts(_T("명령어 처리를 종료합니다. \n"), stdout);
@@ -60,8 +64,56 @@ int _tmain(int argc, TCHAR *argv[])
 			exit가 입력되면 TRUE를 반환하고 이는 프로그램의 종료로 이어진다.
 ***************************************************************************************/
 
-int CmdProcessing(void)
+int CmdProcessing(int argc)
 {
+	if (argc > 0)
+	{
+		if (!_tcscmp(cmdTokenList[0], _T("exit")))
+		{
+			return TRUE;
+		}
+		else if (!_tcscmp(cmdTokenList[0], _T("echo")))
+		{
+			CmdEcho(cmdTokenList[1]);
+		}
+		else if (!_tcscmp(cmdTokenList[0], _T("start")))
+		{
+			TCHAR optString[STR_LEN] = { 0, };
+			TCHAR cmdStringWithOpt[STR_LEN] = { 0, };
+
+			if (argc > 1)
+			{
+				for (int i = 1; i < argc; i++)
+				{
+					_stprintf(optString, _T("%s %s"), optString, cmdTokenList[i]);
+				}
+
+
+				_stprintf(cmdStringWithOpt, _T("%s %s"), _T("SPProject.exe"), optString);
+			}
+			else
+			{
+				_stprintf(cmdStringWithOpt, _T("%s"), _T("SPProject.exe"));
+			}
+
+			BOOL isSuccess = CmdStart(cmdStringWithOpt);
+			if (isSuccess == FALSE)
+				_tprintf(_T("Start 실패 \n"));
+		}
+		else if (!_tcscmp(cmdTokenList[0], _T("aaaaa")))
+		{
+
+		}
+		else
+		{
+			BOOL isSuccess = CmdCreateProcess(cmdTokenList[0]);
+
+			if (isSuccess == FALSE)
+				_tprintf(ERROR_CMD, cmdTokenList[0]);
+		}
+	}
+
+
 	_fputts(_T("Best Command Prompt>> "), stdout);
 	_getts_s(cmdString, STR_LEN);
 
@@ -70,7 +122,7 @@ int CmdProcessing(void)
 
 	while (token != NULL)
 	{
-		_tcscpy(cmdTokenList[tokenNum++], StrLower(token));
+		_tcscpy(cmdTokenList[tokenNum++], token);
 		token = _tcstok(NULL, seps);
 	}
 
@@ -106,6 +158,15 @@ int CmdProcessing(void)
 		if (isSuccess == FALSE)
 			_tprintf(_T("Start 실패 \n"));
 	}
+	else if (!_tcscmp(cmdTokenList[0], _T("lp")))
+	{
+		CmdListProcess();
+	}
+	else if (!_tcscmp(cmdTokenList[0], _T("kp")))
+	{
+		if (!CmdKillProcess(cmdTokenList[1]))
+			_tprintf(_T("CmdKillProcess Error!\n"));
+	}
 	else if (!_tcscmp(cmdTokenList[0], _T("")))
 	{
 
@@ -121,54 +182,101 @@ int CmdProcessing(void)
 	return 0;
 }
 
-int CmdProcessing(int tokenNum)
+std::vector<DWORD> GetProcessPIDs(TCHAR *processName)
 {
-	if (!_tcscmp(cmdTokenList[0], _T("exit")))
-	{
-		return TRUE;
-	}
-	else if (!_tcscmp(cmdTokenList[0], _T("echo")))
-	{
-		CmdEcho(cmdTokenList[1]);
-	}
-	else if (!_tcscmp(cmdTokenList[0], _T("start")))
-	{
-		TCHAR optString[STR_LEN] = { 0, };
-		TCHAR cmdStringWithOpt[STR_LEN] = { 0, };
+	std::vector<DWORD> processPids;
 
-		if (tokenNum > 1)
+	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+	if (hProcessSnap == INVALID_HANDLE_VALUE)
+		return processPids;
+
+	PROCESSENTRY32 pe32;
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	if (!Process32First(hProcessSnap, &pe32))
+		return processPids;
+
+	DWORD retValue = -1;
+
+	do
+	{
+		if (_tcscmp(processName, pe32.szExeFile) == 0)
 		{
-			for (int i = 1; i < tokenNum; i++)
-			{
-				_stprintf(optString, _T("%s %s"), optString, cmdTokenList[i]);
-			}
-
-
-			_stprintf(cmdStringWithOpt, _T("%s %s"), _T("SPProject.exe"), optString);
+			processPids.push_back(pe32.th32ProcessID);
 		}
-		else
-		{
-			_stprintf(cmdStringWithOpt, _T("%s"), _T("SPProject.exe"));
-		}
+	} while (Process32Next(hProcessSnap, &pe32));
 
-		BOOL isSuccess = CmdStart(cmdStringWithOpt);
-		if (isSuccess == FALSE)
-			_tprintf(_T("Start 실패 \n"));
-	}
-	else if (!_tcscmp(cmdTokenList[0], _T("aaaaa")))
-	{
-
-	}
-	else
-	{
-		BOOL isSuccess = CmdCreateProcess(cmdTokenList[0]);
-
-		if (isSuccess == FALSE)
-			_tprintf(ERROR_CMD, cmdTokenList[0]);
-	}
-
-	return 0;
+	return processPids;
 }
+
+/***************************************************************************************
+	함수 : BOOL CmdKillProcess(TCHAR*)
+	기능 : 실행중인 프로세스를 종료한다.
+***************************************************************************************/
+
+BOOL CmdKillProcess(TCHAR *processName)
+{
+	std::vector<DWORD> processIds = GetProcessPIDs(processName);
+
+	if (processIds.empty())
+	{
+		_tprintf(_T("Invalid Process Ids"));
+		return FALSE;
+	}
+
+	while (!processIds.empty())
+	{
+		int processId = processIds.back();
+		processIds.pop_back();
+
+		HANDLE hKillProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, processId);
+
+		if (hKillProcess == INVALID_HANDLE_VALUE)
+		{
+			_tprintf(_T("OpenProcess Error! Code : %d\n"), GetLastError());
+			CloseHandle(hKillProcess);
+			return FALSE;
+		}
+
+		if (!TerminateProcess(hKillProcess, 0))
+		{
+			_tprintf(_T("KillProcess Error! Code : %d\n"), GetLastError());
+			CloseHandle(hKillProcess);
+			return FALSE;
+		}
+
+
+		CloseHandle(hKillProcess);
+	}
+
+	return TRUE;
+}
+
+
+/***************************************************************************************
+	함수 : BOOL CmdListProcess(void)
+	기능 : 실행중인 프로세스를 출력한다.
+***************************************************************************************/
+BOOL CmdListProcess()
+{
+	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+	if (hProcessSnap == INVALID_HANDLE_VALUE)
+		return FALSE;
+
+	PROCESSENTRY32 pe32;
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	if (!Process32First(hProcessSnap, &pe32))
+		return FALSE;
+
+	do 
+	{
+		_tprintf(_T("%30s %5d\n"), pe32.szExeFile, pe32.th32ProcessID);
+	} while (Process32Next(hProcessSnap, &pe32));
+}
+
 
 /***************************************************************************************
 	함수 : BOOL CmdCreateProcess(TCHAR[])
