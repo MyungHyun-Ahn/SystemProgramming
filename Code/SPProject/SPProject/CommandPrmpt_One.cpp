@@ -167,6 +167,45 @@ int CmdProcessing(int argc)
 		if (!CmdKillProcess(cmdTokenList[1]))
 			_tprintf(_T("CmdKillProcess Error!\n"));
 	}
+	else if (!_tcscmp(cmdTokenList[0], _T("sort")))
+	{
+		BOOL isRun;
+		STARTUPINFO si = { 0, };
+		PROCESS_INFORMATION pi;
+		si.cb = sizeof(si);
+		if (!_tcscmp(cmdTokenList[1], _T(">")))
+		{
+			SECURITY_ATTRIBUTES fileSec = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
+
+			HANDLE hFile = CreateFile(
+				cmdTokenList[2], GENERIC_WRITE, FILE_SHARE_READ, &fileSec, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL
+			);
+
+			si.hStdOutput = hFile;
+			si.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+			si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+			si.dwFlags |= STARTF_USESTDHANDLES;
+
+			isRun = CreateProcess(NULL, cmdTokenList[0], NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi);
+
+			WaitForSingleObject(pi.hProcess, INFINITE);
+
+			CloseHandle(hFile);
+		}
+		else
+		{
+			isRun = CreateProcess(NULL, cmdTokenList[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+
+			WaitForSingleObject(pi.hProcess, INFINITE);
+		}
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+	else if (!_tcscmp(cmdTokenList[0], _T("")))
+	{
+
+	}
 	else if (!_tcscmp(cmdTokenList[0], _T("")))
 	{
 
