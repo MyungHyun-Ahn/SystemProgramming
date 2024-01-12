@@ -36,9 +36,7 @@ struct __ThreadPool
 	DWORD threadIdx;
 } gThreadPool;
 
-
 // Mutex 관련 함수들
-
 static HANDLE mutex = NULL;
 
 void InitMutex(void)
