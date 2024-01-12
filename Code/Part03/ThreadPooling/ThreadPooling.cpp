@@ -11,7 +11,10 @@ typedef void (*WORK) (void);
 DWORD AddWorkToPool(WORK work);
 WORK GetWorkFromPool(void);
 DWORD MakeThreadToPool(DWORD numOfThread);
-void WorkerThreadFunction(LPVOID pParam);
+void WorkerThreadFunction(LPVOID pParam)
+{
+	_tprintf(_T("Hello\n"));
+}
 
 typedef struct __WorkerThread
 {
@@ -135,23 +138,6 @@ DWORD MakeThreadToPool(DWORD numOfThread)
 	return numOfThread;
 }
 
-void WorkerThreadFunction(LPVOID pParam)
-{
-	WORK workFunction;
-	HANDLE event = gThreadPool.workerEventList[(DWORD)pParam];
-
-	while (true)
-	{
-		workFunction = GetWorkFromPool();
-		if (workFunction == NULL)
-		{
-			WaitForSingleObject(event, INFINITE);
-			continue;
-		}
-
-		workFunction();
-	}
-}
 
 
 void TestFunction()
@@ -167,11 +153,19 @@ int _tmain(int argc, TCHAR* argv[])
 {
 	MakeThreadToPool(3);
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		AddWorkToPool(TestFunction);
 	}
 
-	Sleep(50000);
+	Sleep(1000);
+
+	for (int i = 0; i < 3; i++)
+	{
+		DWORD exitCode;
+		GetExitCodeThread(gThreadPool.workerThreadList[i].hThread, &exitCode);
+		_tprintf(_T("Thread Exit Code %d\n"), exitCode);
+		CloseHandle(gThreadPool.workerThreadList[i].hThread);
+	}
 	return 0;
 }

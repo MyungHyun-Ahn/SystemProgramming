@@ -1,0 +1,3 @@
+﻿  ThreadPooling.cpp
+C:\Procademy\SystemProgramming\Code\Part03\ThreadPooling\ThreadPooling.cpp(131,3): error C3861: '_beginthread': 식별자를 찾을 수 없습니다.
+C:\Procademy\SystemProgramming\Code\Part03\ThreadPooling\ThreadPooling.cpp(133,3): error C2146: 구문 오류: ';'이(가) 'gThreadPool' 식별자 앞에 없습니다.
