@@ -17,6 +17,6 @@ int _tmain(int argc, TCHAR *argv[])
 	WriteFile(hFile, fileData, sizeof(fileData), &numOfByteWritten, NULL);
 
 	_tprintf(_T("Written data size : %u \n"), numOfByteWritten);
-
+	OVERLAPPED
 	return 0;
 }
