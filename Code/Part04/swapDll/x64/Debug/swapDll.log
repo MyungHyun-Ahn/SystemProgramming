@@ -1,0 +1,10 @@
+﻿  swapDll.cpp
+C:\Procademy\SystemProgramming\Code\Part04\swapDll\swapDll.cpp(4,33): warning C4091: '__declspec(dllexport)': 변수를 선언하지 않으면 'int' 왼쪽은 무시됩니다.
+  (소스 파일 '/swapDll.cpp'을(를) 컴파일하는 중)
+  
+C:\Procademy\SystemProgramming\Code\Part04\swapDll\swapDll.cpp(5,6): warning C4273: 'swapDll': dll 연결이 일치하지 않습니다.
+  (소스 파일 '/swapDll.cpp'을(를) 컴파일하는 중)
+  C:\Procademy\SystemProgramming\Code\Part04\swapDll\swapDll.h(3,6):
+  'swapDll'의 이전 정의를 참조하십시오.
+  
+  swapDll.vcxproj -> C:\Procademy\SystemProgramming\Code\Part04\x64\Debug\swapDll.dll
