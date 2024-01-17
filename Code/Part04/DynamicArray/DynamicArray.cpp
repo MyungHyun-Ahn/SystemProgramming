@@ -17,7 +17,7 @@ int _tmain(int argc, TCHAR *argv[])
 	SYSTEM_INFO sSysInfo;
 
 	GetSystemInfo(&sSysInfo);
-
+	pageSize = sSysInfo.dwPageSize;
 
 	// MAX_PAGE의 개수만큼 페이지 RESERVE!
 	baseAddr = VirtualAlloc(NULL, MAX_PAGE * pageSize, MEM_RESERVE, PAGE_NOACCESS);
@@ -37,7 +37,7 @@ int _tmain(int argc, TCHAR *argv[])
 		{
 			lpPtr[i] = i;
 		}
-		__except (PageFaultExceptionFilter(GetExceptionCode()))
+		__except(PageFaultExceptionFilter(GetExceptionCode()))
 		{
 			ExitProcess(GetLastError());
 		}
@@ -48,9 +48,46 @@ int _tmain(int argc, TCHAR *argv[])
 		_tprintf(_T("%d "), lpPtr[i]);
 
 	BOOL isSuccess = VirtualFree(baseAddr, 0, MEM_RELEASE);
+
+	if (isSuccess)
+		_tprintf(_T("Release succeeded!"));
+	else
+		_tprintf(_T("Release failed!"));
+
+	return 0;
 }
 
-int PageFaultExceptionFilter(DWORD)
+int PageFaultExceptionFilter(DWORD exptCode)
 {
-	return 0;
+	// 예외의 원인이 'page fault'가 아니라면
+	if (exptCode != EXCEPTION_ACCESS_VIOLATION)
+	{
+		_tprintf(_T("Exception code = %d \n"), exptCode);
+		return EXCEPTION_EXECUTE_HANDLER;
+	}
+
+	_tprintf(_T("Exception is a page fault \n"));
+
+	if (pageCnt >= MAX_PAGE)
+	{
+		_tprintf(_T("Exception: out of pages \n"));
+		return EXCEPTION_EXECUTE_HANDLER;
+	}	
+
+	LPVOID lpvResult = VirtualAlloc((LPVOID)nextPageAddr, pageSize, MEM_COMMIT, PAGE_READWRITE);
+
+	if (lpvResult == NULL)
+	{
+		_tprintf(_T("VirtualAlloc failed \n"));
+		return EXCEPTION_EXECUTE_HANDLER;
+	}
+	else
+	{
+		_tprintf(_T("Allocating another page. \n"));
+	}
+
+	pageCnt++;
+	nextPageAddr += pageSize / sizeof(int); // 실수 주의 !
+
+	return EXCEPTION_CONTINUE_EXECUTION;
 }

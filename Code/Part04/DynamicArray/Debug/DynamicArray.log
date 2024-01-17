@@ -1,0 +1,4 @@
+﻿  DynamicArray.cpp
+C:\Procademy\SystemProgramming\Code\Part04\DynamicArray\DynamicArray.cpp(34,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Procademy\SystemProgramming\Code\Part04\DynamicArray\DynamicArray.cpp(47,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  DynamicArray.vcxproj -> C:\Procademy\SystemProgramming\Code\Part04\Debug\DynamicArray.exe
