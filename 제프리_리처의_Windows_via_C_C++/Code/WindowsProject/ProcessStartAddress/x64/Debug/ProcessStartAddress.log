@@ -1,0 +1,8 @@
+﻿  PSA.cpp
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\Code\WindowsProject\ProcessStartAddress\PSA.cpp(13,11): warning C4477: 'wprintf' : 서식 문자열 '%x'에 'unsigned int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'HMODULE'입니다.
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\Code\WindowsProject\ProcessStartAddress\PSA.cpp(13,11): warning C4313: 'wprintf': 서식 문자열의 '%x'이(가) HMODULE' 형식의 인수 1과(와) 충돌합니다.
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\Code\WindowsProject\ProcessStartAddress\PSA.cpp(18,11): warning C4477: 'wprintf' : 서식 문자열 '%x'에 'unsigned int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'HINSTANCE'입니다.
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\Code\WindowsProject\ProcessStartAddress\PSA.cpp(18,11): warning C4313: 'wprintf': 서식 문자열의 '%x'이(가) HINSTANCE' 형식의 인수 1과(와) 충돌합니다.
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\Code\WindowsProject\ProcessStartAddress\PSA.cpp(24,11): warning C4477: 'wprintf' : 서식 문자열 '%x'에 'unsigned int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'HMODULE'입니다.
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\Code\WindowsProject\ProcessStartAddress\PSA.cpp(24,11): warning C4313: 'wprintf': 서식 문자열의 '%x'이(가) HMODULE' 형식의 인수 1과(와) 충돌합니다.
+  ProcessStartAddress.vcxproj -> C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\Code\WindowsProject\x64\Debug\ProcessStartAddress.exe

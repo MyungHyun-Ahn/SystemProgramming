@@ -1,0 +1,11 @@
+﻿cl : 명령줄  warning D9035: 'Gm' 옵션은 더 이상 사용되지 않으므로 이후 릴리스에서 제거될 예정입니다.
+  ProcessInfo.cpp
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\04-ProcessInfo\ProcessInfo.cpp(346,12): warning C4456: 'fOk' 선언은 이전 로컬 선언을 숨깁니다.
+  C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\04-ProcessInfo\ProcessInfo.cpp(341,9):
+  'fOk' 선언을 참조하십시오.
+  
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\04-ProcessInfo\ProcessInfo.cpp(815,12): warning C4456: 'fOk' 선언은 이전 로컬 선언을 숨깁니다.
+  C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\04-ProcessInfo\ProcessInfo.cpp(806,9):
+  'fOk' 선언을 참조하십시오.
+  
+  04-ProcessInfo.vcxproj -> C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\x64\Debug\04-ProcessInfo.exe
