@@ -1,0 +1,13 @@
+﻿cl : 명령줄  warning D9035: 'Gm' 옵션은 더 이상 사용되지 않으므로 이후 릴리스에서 제거될 예정입니다.
+  VMQuery.cpp
+  VMMap.cpp
+  코드를 생성하고 있습니다...
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\14-VMMap\VMMap.cpp(169,35): warning C4477: 'swprintf_s' : 서식 문자열 '%12u'에 'unsigned int' 형식의 인수가 필요하지만 variadic 인수 3의 형식이 'SIZE_T'입니다.
+  C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\14-VMMap\VMMap.cpp(169,35):
+  서식 문자열에서 '%llu'을(를) 사용하는 것이 좋습니다.
+  C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\14-VMMap\VMMap.cpp(169,35):
+  서식 문자열에서 '%Iu'을(를) 사용하는 것이 좋습니다.
+  C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\14-VMMap\VMMap.cpp(169,35):
+  서식 문자열에서 '%I64u'을(를) 사용하는 것이 좋습니다.
+  
+  14-VMMap.vcxproj -> C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\x64\Debug\14-VMMap.exe

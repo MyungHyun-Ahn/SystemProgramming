@@ -1,0 +1,6 @@
+﻿cl : 명령줄  warning D9035: 'Gm' 옵션은 더 이상 사용되지 않으므로 이후 릴리스에서 제거될 예정입니다.
+  LastMsgBoxInfoLib.cpp
+  APIHook.cpp
+  코드를 생성하고 있습니다...
+     C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\x64\Debug\22-LastMsgBoxInfoLib.lib 라이브러리 및 C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\x64\Debug\22-LastMsgBoxInfoLib.exp 개체를 생성하고 있습니다.
+  22-LastMsgBoxInfoLib.vcxproj -> C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\x64\Debug\22-LastMsgBoxInfoLib.dll

@@ -1,0 +1,10 @@
+﻿cl : 명령줄  warning D9035: 'Gm' 옵션은 더 이상 사용되지 않으므로 이후 릴리스에서 제거될 예정입니다.
+  DelayLoadApp.cpp
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\20-DelayLoadApp\DelayLoadApp.cpp(213,12): error C2373: '__pfnDliNotifyHook2': 재정의. 형식 한정자가 다릅니다.
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\Delayimp.h(134,14):
+  '__pfnDliNotifyHook2' 선언을 참조하십시오.
+  
+C:\Procademy\SystemProgramming\제프리_리처의_Windows_via_C_C++\source\20-DelayLoadApp\DelayLoadApp.cpp(214,12): error C2373: '__pfnDliFailureHook2': 재정의. 형식 한정자가 다릅니다.
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\Delayimp.h(141,14):
+  '__pfnDliFailureHook2' 선언을 참조하십시오.
+  
