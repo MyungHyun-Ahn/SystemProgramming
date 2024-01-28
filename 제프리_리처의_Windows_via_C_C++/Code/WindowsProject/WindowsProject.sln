@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.8.34330.188
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33801.447
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CheckHandleTableIndex", "CheckHandleTableIndex\CheckHandleTableIndex.vcxproj", "{6B203F65-0BD4-43B7-BDBD-B28F63B63436}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Alignas", "Alignas\Alignas.vcxproj", "{6B68AD69-F0EA-40F5-9100-B33B728B73BA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CriticalSection", "CriticalSection\CriticalSection.vcxproj", "{FEC7948D-F264-4A5F-B549-2DCC73ABB2B6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EventKernelObject", "EventKernelObject\EventKernelObject.vcxproj", "{817C6B7B-3D2F-4539-8DE5-CFB8416F7372}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,14 @@ Global
 		{FEC7948D-F264-4A5F-B549-2DCC73ABB2B6}.Release|x64.Build.0 = Release|x64
 		{FEC7948D-F264-4A5F-B549-2DCC73ABB2B6}.Release|x86.ActiveCfg = Release|Win32
 		{FEC7948D-F264-4A5F-B549-2DCC73ABB2B6}.Release|x86.Build.0 = Release|Win32
+		{817C6B7B-3D2F-4539-8DE5-CFB8416F7372}.Debug|x64.ActiveCfg = Debug|x64
+		{817C6B7B-3D2F-4539-8DE5-CFB8416F7372}.Debug|x64.Build.0 = Debug|x64
+		{817C6B7B-3D2F-4539-8DE5-CFB8416F7372}.Debug|x86.ActiveCfg = Debug|Win32
+		{817C6B7B-3D2F-4539-8DE5-CFB8416F7372}.Debug|x86.Build.0 = Debug|Win32
+		{817C6B7B-3D2F-4539-8DE5-CFB8416F7372}.Release|x64.ActiveCfg = Release|x64
+		{817C6B7B-3D2F-4539-8DE5-CFB8416F7372}.Release|x64.Build.0 = Release|x64
+		{817C6B7B-3D2F-4539-8DE5-CFB8416F7372}.Release|x86.ActiveCfg = Release|Win32
+		{817C6B7B-3D2F-4539-8DE5-CFB8416F7372}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
