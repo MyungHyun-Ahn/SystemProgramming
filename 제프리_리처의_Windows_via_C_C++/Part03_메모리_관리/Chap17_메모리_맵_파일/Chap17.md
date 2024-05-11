@@ -185,3 +185,99 @@ HANDLE CreateFileMapping(
 * PAGE_WRITECOPY
 * PAGE_EXECUTE_READ
 * PAGE_EXECUTE_READWRITE
+
+페이지 보호 특성과 더불어 다섯 가지 섹션 특성을 비트 OR 연산을 이용하여 fdwProtect 매개변수에 전달할 수 있다.
+* 섹션이란 메모리 매핑의 다른 말
+
+섹션 특성
+* SEC_NOCACHE
+  * 매핑된 파일에 대해 캐시를 수행하지 못하게 한다.
+  * 주로 디바이스 개발자들에 의해 사용
+* SEC_IMAGE
+  * 매핑할 파일이 PE 파일 이미지임을 알려준다.
+  * 이것을 인자로 전달하면 시스템은 파일 이미지를 매핑하고 적절한 페이지 보호 특성을 결정
+* SEC_RESERVE
+* SEC_COMMIT
+* SEC_LARGE_PAGES
+
+dwMaximumSIzeHigh와 dwMaximumSizeLow 파라미터
+* 각각 상위 32비트, 하위 32비트
+* 파일의 크기가 4GB 이하라면 dwMaximumSizeHigh는 항상 0
+* 둘 다 0인 경우 함수는 NULL을 반환하고 실패
+
+### 3. 파일의 데이터를 프로세스의 주소 공간에 매핑하기
+파일 매핑 오브젝트를 생성한 후에는 커밋 단계를 거쳐야 한다.
+
+```C++
+PVOID MapViewOfFile(
+  HANDLE hFileMappingObject,
+  DWORD dwDesiredAccess,
+  DWORD dwFileOffsetHigh,
+  DWORD dwFileOffsetLow,
+  SIZE_T dwNumberOfBytesToMap
+);
+```
+
+hFileMappingObject
+* 전 단계에서 생성한 파일 매핑 객체 전달
+
+dwDesiredAccess
+* 데이터에 어떻게 접근할 것인지 나타내는 값
+
+메모리 맵 파일에 요구되는 접근 권한
+* FILE_MAP_WRITE
+* FILE_MAP_READ
+* FILE_MAP_ALL_ACCESS
+* FILE_MAP_COPY
+* FILE_MAP_EXECUTE
+
+나머지 세 개의 매개변수
+* 주소 공간 상에 영역을 예약
+* 물리적 저장소를 매핑하기 위해 필요한 정보들
+
+주소 공간에 매핑된 파일의 일부를 뷰(view)라고 함
+
+dwFileOffsetHig, dwFileOffsetLow
+* 데이터 파일의 어떤 부분을 뷰로 구성할 것인가 하는 정보
+* 16EB 크기의 파일을 지원하므로 상하위 비트를 나누어서 전달
+* 파일의 오프셋 값은 반드시 Allocation granularity의 배수 값으로 전달
+
+dwNumberOfBytesToMap
+* 얼마나 많은 데이터를 주소 공간상에 매핑할지에 대한 정보를 전달해 주어야 한다.
+* 주소 공간 상에 얼마만큼의 영역을 예약할 것인지를 지정하는 것과 동일
+* 0을 전달하면 시스템은 지정된 오프셋으로부터 파일의 끝까지를 뷰로 구성하려 시도
+
+만일 FILE_MAP_COPY 플래그를 지정
+* 페이징 파일로부터 물리적 저장소를 커밋하게 된다.
+* 커밋하는 공간의 크기는 dwNumberOfBytesToMap 매개변수에 의해 결정
+* 읽는 동안에는 아무런 작업도 일어나지 않으며 시스템 페이징 파일에 커밋된 페이지를 사용하지 않음
+* 수정을 시도하려는 순간 페이징 파일의 커밋된 페이지들 중 하나를 취하여 복사하고 복사본을 수정
+
+### 4. 프로세스의 주소 공간으로부터 파일 데이터에 대한 매핑 해제하기
+```C++
+BOOL UnmapViewOfFile(PVOID pvBaseAddress);
+```
+* 예약되었던 영역을 삭제
+
+시스템은 파일 데이터의 페이지를 버퍼링하기 때문에 즉각적으로 파일에 반영되지는 않는다.
+* FlushViewOfFile 함수를 호출하여 변경된 내용을 디스크 이미지에 강제로 저장하도록 할 수 있다.
+
+```C++
+BOOL FlushViewOfFile(
+  PVOID pvAddress,
+  SIZE_T dwNumberOfBytesToFlush
+);
+```
+
+pvAddress
+* 메모리 맵 파일의 뷰에 포함된 주소를 지정
+* 페이지 경계에 맞추어 내림이 수행됨
+
+dwNumberOfBytesToFlush
+* 디스크로 강제 저장하고자 하는 영역의 바이트 수를 지정
+* 페이지 크기에 맞춰 올림이 수행됨
+
+### 5, 6. 파일 매핑 오브젝트와 파일 오브젝트 닫기
+CloseHandle을 통해 파일 매핑 오브젝트를 닫아주면 된다.
+* 그러나 MapViewOfFile 함수가 파일 매핑 오브젝트의 Usage count를 증가시키기 때문에
+* 파일 매핑 오브젝트가 즉시 삭제되지 않을 수 있다.
